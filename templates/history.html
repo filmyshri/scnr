@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Event History</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <nav class="nav">
+        <a class="button secondary" href="/">Home</a>
+        <a class="button primary" href="/history">History</a>
+        <form action="/photographer/logout" method="post">
+          <button class="button secondary" type="submit">Logout</button>
+        </form>
+      </nav>
+
+      <header class="hero">
+        <h1>Event History</h1>
+        <p>Previously created events and access codes.</p>
+      </header>
+
+      <section class="card">
+        {% if events %}
+          <div class="history-list">
+            {% for event in events %}
+              <div class="history-item">
+                <div>
+                  <strong>{{ event.name }}</strong>
+                  <span class="history-muted">Event ID: {{ event.id }}</span>
+                </div>
+                <div class="history-actions">
+                  <span class="history-muted">Code: {{ event.code }}</span>
+                  <a class="button secondary" href="/event/{{ event.id }}">Open</a>
+                </div>
+              </div>
+            {% endfor %}
+          </div>
+        {% else %}
+          <p class="status">No events created yet.</p>
+        {% endif %}
+      </section>
+    </main>
+  </body>
+</html>

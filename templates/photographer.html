@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Photographer Portal</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <nav class="nav">
+        <a class="button secondary" href="/">Home</a>
+        {% if logged_in %}
+          <a class="button secondary" href="/history">History</a>
+          <form action="/photographer/logout" method="post">
+            <button class="button secondary" type="submit">Logout</button>
+          </form>
+        {% endif %}
+      </nav>
+      <header class="hero">
+        <h1>Photographer Portal</h1>
+        <p>Create events, upload photos, and share links.</p>
+      </header>
+
+      {% if not logged_in %}
+        <section class="card">
+          <h2>Create Photographer Account</h2>
+          <form class="event-block" action="/photographer/signup" method="post">
+            <input
+              class="text-input"
+              type="text"
+              name="client_name"
+              placeholder="Client name"
+            />
+            <input
+              class="text-input"
+              type="text"
+              name="username"
+              placeholder="Username"
+            />
+            <input
+              class="text-input"
+              type="password"
+              name="password"
+              placeholder="Password"
+            />
+            <button class="button primary" type="submit">Sign Up</button>
+          </form>
+        </section>
+
+        <section class="card">
+          <h2>Photographer Login</h2>
+          <form class="event-block" action="/photographer/login" method="post">
+            <input
+              class="text-input"
+              type="text"
+              name="username"
+              placeholder="Username"
+            />
+            <input
+              class="text-input"
+              type="password"
+              name="password"
+              placeholder="Password"
+            />
+            <button class="button primary" type="submit">Login</button>
+            {% if error %}
+              <p class="status">{{ error }}</p>
+            {% endif %}
+            {% if success %}
+              <p class="status">{{ success }}</p>
+            {% endif %}
+          </form>
+        </section>
+      {% else %}
+        <section class="card">
+          <h2>Event Manager</h2>
+          <div class="event-grid">
+            <div class="event-block">
+              <h3>Create Event</h3>
+              <input
+                id="event-name"
+                class="text-input"
+                type="text"
+                placeholder="Event name"
+              />
+              <button id="create-event" class="button primary" type="button">
+                Create Event
+              </button>
+              <p id="event-created" class="status"></p>
+            </div>
+            <div class="event-block">
+              <h3>Load Event</h3>
+              <input
+                id="event-id"
+                class="text-input"
+                type="text"
+                placeholder="Event ID"
+              />
+              <input
+                id="event-code"
+                class="text-input"
+                type="text"
+                placeholder="Access code"
+              />
+              <button id="load-event" class="button secondary" type="button">
+                Load Event
+              </button>
+              <p id="event-status" class="status"></p>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>Upload Event Photos</h2>
+          <div class="event-upload">
+            <input
+              id="event-folder"
+              class="text-input"
+              type="text"
+              placeholder="Folder name (ex: pre-wedding, ceremony)"
+            />
+            <input id="event-photo" type="file" accept="image/*,.zip" multiple />
+            <button id="upload-event-photo" class="button secondary" type="button">
+              Add Photo
+            </button>
+          </div>
+          <p class="status">Upload multiple images or a ZIP file.</p>
+        </section>
+
+        <section class="card">
+          <h2>Event History</h2>
+          {% if events %}
+            <div class="history-list">
+              {% for event in events %}
+                <div class="history-item">
+                  <form class="history-actions" action="/events/{{ event.id }}/update" method="post">
+                    <input
+                      class="text-input"
+                      type="text"
+                      name="name"
+                      value="{{ event.name }}"
+                    />
+                    <button class="button secondary" type="submit">Save</button>
+                  </form>
+                  <div class="history-actions">
+                    <span class="history-muted">ID: {{ event.id }}</span>
+                    <span class="history-muted">Code: {{ event.code }}</span>
+                    <a class="button secondary" href="/event/{{ event.id }}">Open</a>
+                  </div>
+                </div>
+              {% endfor %}
+            </div>
+          {% else %}
+            <p class="status">No events created yet.</p>
+          {% endif %}
+        </section>
+
+        <section class="gallery">
+          <div class="gallery-header">
+            <h2>Event Gallery</h2>
+            <select id="event-gallery-folder" class="text-input">
+              <option value="default">Default</option>
+            </select>
+            <button id="refresh-event-gallery" class="button secondary" type="button">
+              Refresh
+            </button>
+          </div>
+          <div id="event-gallery-grid" class="gallery-grid"></div>
+        </section>
+      {% endif %}
+    </main>
+
+    {% if logged_in %}
+      <script src="/static/photographer.js"></script>
+    {% endif %}
+  </body>
+</html>
