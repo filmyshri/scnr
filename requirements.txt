@@ -6,3 +6,4 @@ Pillow
 fpdf2
 Flask
 gunicorn
+opencv-python-headless
