@@ -1,0 +1,6 @@
+Flask
+face_recognition
+Pillow
+numpy
+setuptools<81
+fpdf2

@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Face Match</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body>
+    <main class="page">
+      <header class="hero">
+        <h1>Selfie Match</h1>
+        <p>Upload a selfie and find the closest match.</p>
+      </header>
+
+      <section class="card">
+        <h2>Event Manager</h2>
+        <div class="event-grid">
+          <div class="event-block">
+            <h3>Create Event</h3>
+            <input
+              id="event-name"
+              class="text-input"
+              type="text"
+              placeholder="Event name"
+            />
+            <button id="create-event" class="button primary" type="button">
+              Create Event
+            </button>
+            <p id="event-created" class="status"></p>
+          </div>
+          <div class="event-block">
+            <h3>Load Event</h3>
+            <input
+              id="event-id"
+              class="text-input"
+              type="text"
+              placeholder="Event ID"
+            />
+            <input
+              id="event-code"
+              class="text-input"
+              type="text"
+              placeholder="Access code"
+            />
+            <button id="load-event" class="button secondary" type="button">
+              Load Event
+            </button>
+            <p id="event-status" class="status"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <h2>Event Photo Upload</h2>
+        <div class="event-upload">
+          <input id="event-photo" type="file" accept="image/*" />
+          <button id="upload-event-photo" class="button secondary" type="button">
+            Add Photo
+          </button>
+        </div>
+        <p class="status">Use this for photographer uploads.</p>
+      </section>
+
+      <section class="card">
+        <h2>Customer Selfie Match (Event)</h2>
+        <div id="event-drop-zone" class="drop-zone">
+          <input id="event-file-input" type="file" accept="image/*" hidden />
+          <div class="drop-content">
+            <div class="drop-icon">📷</div>
+            <p>Drag and drop a selfie here</p>
+            <span>or</span>
+            <button id="event-browse" class="button secondary" type="button">
+              Browse files
+            </button>
+          </div>
+          <img id="event-preview" class="preview hidden" alt="Event preview" />
+        </div>
+        <div class="actions">
+          <button id="event-search" class="button primary" type="button" disabled>
+            Match Event
+          </button>
+          <span id="event-match-status" class="status"></span>
+        </div>
+        <div class="results">
+          <div class="result-card">
+            <h3>Uploaded Selfie</h3>
+            <div class="image-frame">
+              <img id="event-uploaded" alt="Uploaded selfie" />
+            </div>
+          </div>
+          <div class="result-card">
+            <h3>Best Match</h3>
+            <div class="image-frame">
+              <img id="event-match" alt="Matched face" />
+            </div>
+            <div class="result-actions">
+              <p id="event-confidence" class="confidence"></p>
+              <a id="event-download" class="button secondary hidden" download>
+                Download match
+              </a>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <div id="drop-zone" class="drop-zone">
+          <input id="file-input" type="file" accept="image/*" hidden />
+          <div class="drop-content">
+            <div class="drop-icon">📷</div>
+            <p>Drag and drop a selfie here</p>
+            <span>or</span>
+            <button id="browse-button" class="button secondary" type="button">
+              Browse files
+            </button>
+          </div>
+          <img id="preview-image" class="preview hidden" alt="Uploaded preview" />
+        </div>
+
+        <div class="actions">
+          <button id="search-button" class="button primary" type="button" disabled>
+            Search
+          </button>
+          <button id="add-db-button" class="button secondary" type="button" disabled>
+            Add to database
+          </button>
+          <span id="status" class="status"></span>
+        </div>
+      </section>
+
+      <section class="results">
+        <div class="result-card">
+          <h3>Uploaded Selfie</h3>
+          <div class="image-frame">
+            <img id="result-upload" alt="Uploaded selfie" />
+          </div>
+        </div>
+        <div class="result-card">
+          <h3>Best Match</h3>
+          <div class="image-frame">
+            <img id="result-match" alt="Matched face" />
+          </div>
+          <div class="result-actions">
+            <p id="confidence" class="confidence"></p>
+            <a id="download-link" class="button secondary hidden" download>
+              Download match
+            </a>
+          </div>
+        </div>
+      </section>
+
+      <section class="gallery">
+        <div class="gallery-header">
+          <h2>Database Gallery</h2>
+          <button id="refresh-gallery" class="button secondary" type="button">
+            Refresh
+          </button>
+        </div>
+        <div id="gallery-grid" class="gallery-grid"></div>
+      </section>
+
+      <section class="gallery">
+        <div class="gallery-header">
+          <h2>Event Gallery</h2>
+          <button id="refresh-event-gallery" class="button secondary" type="button">
+            Refresh
+          </button>
+        </div>
+        <div id="event-gallery-grid" class="gallery-grid"></div>
+      </section>
+    </main>
+
+    <script src="/static/app.js"></script>
+  </body>
+</html>

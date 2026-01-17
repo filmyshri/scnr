@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Customer Portal</title>
+    <link rel="stylesheet" href="/static/style.css" />
+  </head>
+  <body data-event-id="{{ event_id }}">
+    <main class="page">
+      <nav class="nav">
+        <a class="button secondary" href="/">Home</a>
+      </nav>
+      <header class="hero">
+        <h1>Customer Portal</h1>
+        <p>Enter the event code to view and match photos.</p>
+      </header>
+
+      <section class="card">
+        <h2>Load Event</h2>
+        <div class="event-grid">
+          <div class="event-block">
+            <input
+              id="event-id"
+              class="text-input"
+              type="text"
+              placeholder="Event ID"
+            />
+            <input
+              id="event-code"
+              class="text-input"
+              type="text"
+              placeholder="Access code"
+            />
+            <button id="load-event" class="button primary" type="button">
+              Load Event
+            </button>
+            <p id="event-status" class="status"></p>
+          </div>
+          <div class="event-block">
+            <label class="status" for="event-folder-select">Folder filter</label>
+            <select id="event-folder-select" class="text-input">
+              <option value="all">All folders</option>
+              <option value="default">Default</option>
+            </select>
+          </div>
+        </div>
+      </section>
+
+      <section class="card">
+        <details class="accordion">
+          <summary>Selfie Match (Event)</summary>
+          <div class="accordion-body">
+            <div id="event-drop-zone" class="drop-zone">
+              <input id="event-file-input" type="file" accept="image/*" hidden />
+              <div class="drop-content">
+                <div class="drop-icon">📷</div>
+                <p>Drag and drop a selfie here</p>
+                <span>or</span>
+                <button id="event-browse" class="button secondary" type="button">
+                  Browse files
+                </button>
+              </div>
+              <img id="event-preview" class="preview hidden" alt="Event preview" />
+            </div>
+            <div class="actions">
+              <button id="event-search" class="button primary" type="button" disabled>
+                Match Event
+              </button>
+              <span id="event-match-status" class="status"></span>
+            </div>
+            <div class="results">
+              <div class="result-card">
+                <h3>Uploaded Selfie</h3>
+                <div class="image-frame">
+                  <img id="event-uploaded" alt="Uploaded selfie" />
+                </div>
+              </div>
+              <div class="result-card">
+                <h3>Best Match</h3>
+                <div class="image-frame">
+                  <img id="event-match" alt="Matched face" />
+                </div>
+                <div class="result-actions">
+                  <p id="event-confidence" class="confidence"></p>
+                  <a id="event-download" class="button secondary hidden" download>
+                    Download match
+                  </a>
+                </div>
+              </div>
+            </div>
+            <div class="gallery">
+              <div class="gallery-header">
+                <h2>All Matches</h2>
+              </div>
+              <div id="event-matches-grid" class="gallery-grid"></div>
+            </div>
+          </div>
+        </details>
+      </section>
+
+      <section class="card">
+        <h2>Selected Photos</h2>
+        <div class="selection-actions">
+          <span id="selected-count" class="status">0 selected</span>
+          <button id="download-selected" class="button secondary" type="button">
+            Download selected
+          </button>
+          <button id="text-selected" class="button secondary" type="button">
+            Save list (TXT)
+          </button>
+          <button id="pdf-selected" class="button secondary" type="button">
+            Thumbnail PDF
+          </button>
+          <button id="clear-selected" class="button secondary" type="button">
+            Clear
+          </button>
+        </div>
+        <div id="selected-list" class="selection-list"></div>
+      </section>
+
+      <section class="gallery">
+        <div class="gallery-header">
+          <h2>Event Gallery</h2>
+          <button id="refresh-event-gallery" class="button secondary" type="button">
+            Refresh
+          </button>
+        </div>
+        <div id="event-gallery-grid" class="gallery-grid"></div>
+      </section>
+    </main>
+
+    <script src="/static/customer.js"></script>
+  </body>
+</html>
