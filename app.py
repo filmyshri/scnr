@@ -11,7 +11,8 @@ from flask import Flask, jsonify, redirect, render_template, request, send_from_
 from werkzeug.security import check_password_hash, generate_password_hash
 from fpdf import FPDF
 from PIL import Image
-import face_recognition
+import cv2
+import numpy as np
 
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -24,6 +25,9 @@ ALLOWED_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 ZIP_EXTENSIONS = {".zip"}
 MATCH_CACHE = {}
 MATCH_CACHE_TTL = 60 * 30
+FACE_CASCADE = cv2.CascadeClassifier(
+    os.path.join(cv2.data.haarcascades, "haarcascade_frontalface_default.xml")
+)
 
 app = Flask(__name__, static_folder="static", template_folder="templates")
 app.secret_key = os.environ.get("SECRET_KEY", "change_me")
@@ -53,8 +57,25 @@ def _safe_zip_members(members):
 
 
 def _load_face_encodings(image_path):
-    image = face_recognition.load_image_file(image_path)
-    return face_recognition.face_encodings(image)
+    if FACE_CASCADE.empty():
+        return []
+    image = cv2.imread(image_path)
+    if image is None:
+        return []
+    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+    faces = FACE_CASCADE.detectMultiScale(
+        gray, scaleFactor=1.1, minNeighbors=5, minSize=(60, 60)
+    )
+    encodings = []
+    for (x, y, w, h) in faces:
+        face = gray[y : y + h, x : x + w]
+        resized = cv2.resize(face, (100, 100), interpolation=cv2.INTER_AREA)
+        encodings.append(resized.flatten().astype("float32") / 255.0)
+    return encodings
+
+
+def _face_distance(encoding_a, encoding_b):
+    return float(np.linalg.norm(encoding_a - encoding_b))
 
 
 def _ensure_dir(path):
@@ -598,7 +619,7 @@ def upload():
         if not db_encodings:
             continue
         for db_encoding in db_encodings:
-            distance = face_recognition.face_distance([db_encoding], selfie_encoding)[0]
+            distance = _face_distance(db_encoding, selfie_encoding)
             if best_distance is None or distance < best_distance:
                 best_distance = float(distance)
                 best_match = filename
@@ -606,7 +627,7 @@ def upload():
     if best_match is None:
         return jsonify(error="No faces found in database images."), 400
 
-    confidence = max(0.0, 1.0 - best_distance)
+    confidence = 1.0 / (1.0 + best_distance)
 
     return jsonify(
         best_match=best_match,
@@ -725,9 +746,7 @@ def match_event(event_id):
                 continue
             min_distance = None
             for db_encoding in db_encodings:
-                distance = float(
-                    face_recognition.face_distance([db_encoding], selfie_encoding)[0]
-                )
+                distance = _face_distance(db_encoding, selfie_encoding)
                 if min_distance is None or distance < min_distance:
                     min_distance = distance
             if min_distance is None:
@@ -741,12 +760,12 @@ def match_event(event_id):
         return jsonify(error="No faces found in event images."), 400
 
     match_scores.sort(key=lambda item: item[2])
-    confidence = max(0.0, 1.0 - best_distance)
+    confidence = 1.0 / (1.0 + best_distance)
     matches = [
         {
             "filename": name,
             "folder": folder_name,
-            "confidence": round(max(0.0, 1.0 - distance), 4),
+            "confidence": round(1.0 / (1.0 + distance), 4),
             "url": (
                 f"/events/{event_id}/photos/{name}?code={code}"
                 if is_legacy
