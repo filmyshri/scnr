@@ -1,6 +1,9 @@
-Flask
-face_recognition
-Pillow
-numpy
+cmake
+wheel
 setuptools<81
+numpy
+Pillow
 fpdf2
+Flask
+gunicorn
+face_recognition
